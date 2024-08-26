@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/utils/dimensions.dart';
 
@@ -15,10 +17,14 @@ class ResponsiveLayout extends StatelessWidget {
     return LayoutBuilder(builder: (context, Constraints) {
       if (Constraints.maxWidth > webScreenSize) {
         //web screen
+        log("webscreen");
         return webScreenLayout;
+      } else {
+        //mobile screen
+        log("mobilescreen");
+
+        return mobileScreenLayout;
       }
-      //mobile screen
-      return mobileScreenLayout;
     });
   }
 }
