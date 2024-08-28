@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/domain/auth_methods.dart';
-import 'package:instagram_flutter/presentation/home/home_screen.dart';
 import 'package:instagram_flutter/presentation/login_screen/login_screen.dart';
+import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
+import 'package:instagram_flutter/responsive/responsive_layout_screen.dart';
+import 'package:instagram_flutter/responsive/web_screen_layout.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/constants.dart';
 import 'package:instagram_flutter/presentation/widgets/text_field_input.dart';
@@ -24,8 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
-  Uint8List?  _image;
-  bool _isLoading = false;
+  Uint8List? _image;
 
   @override
   void dispose() {
@@ -44,9 +45,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void signUpUser() async {
-    setState(() {
-      _isLoading = true;
-    });
     String res = await AuthMethods().signUpUser(
       email: _emailController.text,
       username: _userNameController.text,
@@ -60,13 +58,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => HomeScreen(),
-        ),
+            builder: (ctx) =>  ResponsiveLayout(
+                webScreenLayout: WebScreenLayout(),
+                mobileScreenLayout: MobileScreenLayout())),
       );
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override

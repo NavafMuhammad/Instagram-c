@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter/domain/auth_methods.dart';
 import 'package:instagram_flutter/presentation/signup_screen/signup_screen.dart';
+import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
+import 'package:instagram_flutter/responsive/responsive_layout_screen.dart';
+import 'package:instagram_flutter/responsive/web_screen_layout.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/constants.dart';
 import 'package:instagram_flutter/presentation/widgets/text_field_input.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,6 +26,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  void loginUser() async {
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text, password: _passwordController.text);
+    if (res == "success") {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (ctx) =>  ResponsiveLayout(
+                webScreenLayout: WebScreenLayout(),
+                mobileScreenLayout: MobileScreenLayout())),
+      );
+    } else {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -56,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             kheight24,
             InkWell(
-              onTap: () {},
+              onTap: loginUser,
               child: Container(
                 width: double.infinity,
                 alignment: Alignment.center,
