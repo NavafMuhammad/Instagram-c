@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/presentation/add_posts/add_post_screen.dart';
+import 'package:instagram_flutter/presentation/home/home_screen.dart';
+import 'package:instagram_flutter/presentation/notiication/notification_screen.dart';
+import 'package:instagram_flutter/presentation/profile/profile_screen.dart';
+import 'package:instagram_flutter/presentation/search/search_screen.dart';
+import 'package:instagram_flutter/responsive/widgets/bottom_navbar.dart';
 
 class MobileScreenLayout extends StatelessWidget {
-  const MobileScreenLayout({super.key});
+  MobileScreenLayout({super.key});
+
+  final _pages = [
+    const HomeScreen(),
+    const SearchScreen(),
+    const AddPostScreen(),
+    const NotificationScreen(),
+    const ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text("Mobile Screen")), );
+    return Scaffold(
+        body: ValueListenableBuilder(
+            valueListenable: indexNotifier,
+            builder: (BuildContext context, int newIndex, Widget? _) {
+              return _pages[newIndex];
+            }),
+        bottomNavigationBar: const BottomNavBar());
   }
 }
