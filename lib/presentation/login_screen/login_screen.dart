@@ -8,6 +8,7 @@ import 'package:instagram_flutter/responsive/web_screen_layout.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/constants.dart';
 import 'package:instagram_flutter/presentation/widgets/text_field_input.dart';
+import 'package:instagram_flutter/utils/dimensions.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (res == "success") {
       Navigator.of(context).push(
         MaterialPageRoute(
-            builder: (ctx) =>  ResponsiveLayout(
+            builder: (ctx) => ResponsiveLayout(
                 webScreenLayout: WebScreenLayout(),
                 mobileScreenLayout: MobileScreenLayout())),
       );
@@ -45,10 +46,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
           child: Container(
-        padding: horizontalPadding32,
+        padding: size.width > webScreenSize
+            ? EdgeInsets.symmetric(horizontal: size.width / 3)
+           
+                : horizontalPadding32,
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

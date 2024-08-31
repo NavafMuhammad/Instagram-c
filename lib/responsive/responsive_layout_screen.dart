@@ -36,7 +36,8 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
       if (Constraints.maxWidth > webScreenSize) {
         //web screen
         log("webscreen");
-        return widget.webScreenLayout;
+        // return widget.webScreenLayout;
+        return const SizedBox();
       } else {
         //mobile screen
         log("mobilescreen");
