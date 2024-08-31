@@ -23,7 +23,10 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("posts").snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection("posts")
+              .orderBy("datePublished", descending: true)
+              .snapshots(),
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -34,7 +37,9 @@ class HomeScreen extends StatelessWidget {
 
             return ListView.builder(
               itemBuilder: (context, index) {
-                return PostCard(snap: snapshot.data!.docs[index].data());
+                return PostCard(
+                  snap: snapshot.data!.docs[index].data(),
+                );
               },
               itemCount: snapshot.data!.docs.length,
             );

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/presentation/add_posts/add_post_screen.dart';
 import 'package:instagram_flutter/presentation/home/home_screen.dart';
@@ -14,7 +15,9 @@ class MobileScreenLayout extends StatelessWidget {
     const SearchScreen(),
     const AddPostScreen(),
     const NotificationScreen(),
-    const ProfileScreen(),
+     ProfileScreen(
+      uid: FirebaseAuth.instance.currentUser!.uid,
+     ),
   ];
 
   @override
