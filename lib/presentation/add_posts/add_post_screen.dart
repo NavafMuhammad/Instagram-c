@@ -110,7 +110,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = Provider.of<UserProvider>(context).getUser;
+    final UserModel? user = Provider.of<UserProvider>(context).getUser;
+
+    if (user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+
     return _file == null
         ? Center(
             child: IconButton(

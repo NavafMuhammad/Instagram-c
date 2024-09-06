@@ -9,15 +9,25 @@ class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Get user details from Firestore
   Future<UserModel> getUserDetails() async {
-    User currentUser = _auth.currentUser!;
+    try {
+      User currentUser = _auth.currentUser!;
 
-    DocumentSnapshot snapshot = await _firestore.collection("users").doc(currentUser.uid).get();
+      DocumentSnapshot snapshot = await _firestore.collection("users").doc(currentUser.uid).get();
 
-    return UserModel.fromSnap(snapshot);
+      if (snapshot.exists) {
+        return UserModel.fromSnap(snapshot); // Assuming fromSnap handles deserialization
+      } else {
+        throw Exception("User not found in Firestore");
+      }
+    } catch (e) {
+      log("Error fetching user details: $e");
+      rethrow; // Re-throw the error to be handled upstream
+    }
   }
 
-// to sign up user
+  // Sign up a user
   Future<String> signUpUser({
     required String email,
     required String username,
@@ -25,67 +35,74 @@ class AuthMethods {
     required String bio,
     required Uint8List file,
   }) async {
-    String res = "some error occurred";
+    String res = "Some error occurred";
     try {
-      if (email.isNotEmpty && username.isNotEmpty && password.isNotEmpty) {
-        _auth.setLanguageCode('en');
-        //register the user
+      // Validate inputs
+      if (email.isNotEmpty && username.isNotEmpty && password.isNotEmpty && bio.isNotEmpty && file.isNotEmpty) {
+        // Register the user
         UserCredential userCred = await _auth.createUserWithEmailAndPassword(
-            email: email, password: password);
-        // add user to database
-        log(userCred.user!.uid);
+          email: email, password: password);
 
-        String photoUrl = await StorageMethods()
-            .uploadImageToStorage('profilePics', file, false);
+        // Log UID for debugging
+        log("User UID: ${userCred.user!.uid}");
 
+        // Upload profile picture
+        String photoUrl = await StorageMethods().uploadImageToStorage('profilePics', file, false);
+
+        // Create a new UserModel object
         UserModel user = UserModel(
-            userName: username,
-            uid: userCred.user!.uid,
-            email: email,
-            bio: bio,
-            following: [],
-            followers: [],
-            photoUrl: photoUrl);
+          userName: username,
+          uid: userCred.user!.uid,
+          email: email,
+          bio: bio,
+          following: [],
+          followers: [],
+          photoUrl: photoUrl,
+        );
 
-        await _firestore
-            .collection("users")
-            .doc(userCred.user!.uid)
-            .set(user.toJson());
+        // Save user to Firestore
+        await _firestore.collection("users").doc(userCred.user!.uid).set(user.toJson());
 
-        return res = "success";
+        res = "success";
       } else {
         res = "Please fill in all fields";
       }
-    } catch (err) {
-      return res = err.toString();
+    } catch (e) {
+      log("Sign-up error: $e");
+      res = e.toString();
     }
     return res;
   }
 
-  // login user
-
+  // Login user
   Future<String> loginUser({
     required String email,
     required String password,
   }) async {
-    String res = "some error occured";
-
+    String res = "Some error occurred";
     try {
+      // Validate inputs
       if (email.isNotEmpty && password.isNotEmpty) {
-        await _auth.signInWithEmailAndPassword(
-            email: email, password: password);
-
-        return res = "success";
+        // Sign in the user
+        await _auth.signInWithEmailAndPassword(email: email, password: password);
+        res = "success";
       } else {
-        res = "Please enter all the required fields";
+        res = "Please enter all required fields";
       }
-    } catch (err) {
-      log(err.toString());
+    } catch (e) {
+      log("Login error: $e");
+      res = e.toString();
     }
     return res;
   }
 
-  Future<void> signOut() async{
-    await _auth.signOut();
+  // Sign out user
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      log("Error signing out: $e");
+      throw e;
+    }
   }
 }

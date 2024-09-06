@@ -218,14 +218,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
-                            return Center(
+                            return const Center(
                               child: Text("No posts found"),
                             );
                           }
 
                           return GridView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data!.docs.length,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(

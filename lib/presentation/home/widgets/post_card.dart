@@ -45,7 +45,10 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = Provider.of<UserProvider>(context).getUser;
+    final UserModel? user = Provider.of<UserProvider>(context).getUser;
+    if (user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Container(
       color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 10),

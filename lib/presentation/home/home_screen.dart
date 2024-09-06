@@ -4,8 +4,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/presentation/home/widgets/post_card.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Call refreshUser when HomeScreen is initialized
+    // Provider.of<UserProvider>(context, listen: false).refreshUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +44,18 @@ class HomeScreen extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("An error occurred: ${snapshot.error}"),
+              );
+            }
+
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(
+                child: Text("No posts found"),
               );
             }
 
